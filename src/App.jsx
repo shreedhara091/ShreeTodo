@@ -18,7 +18,9 @@ function App() {
   }, [])
 
 
-  const saveToLS = (params) => { localStorage.setItem("todos", JSON.stringify(todos)) }
+  const saveToLS = (newTodos) => {
+    localStorage.setItem("todos", JSON.stringify(newTodos))
+  }
 
   const toggleFinished = (e) => {
     setShowFinished(!showFinished)
@@ -28,25 +30,38 @@ function App() {
   const handleEdit = (e, id) => {
     let t = todos.filter(i => i.id === id)
     setTodo(t[0].todo)
+
     let newTodos = todos.filter(item => {
       return item.id !== id
     })
-    setTodos(newTodos)
-    saveToLS()
-  }
 
+    setTodos(newTodos)
+    saveToLS(newTodos)
+  }
   const handleDelete = (e, id) => {
     let newTodos = todos.filter(item => {
       return item.id !== id
     })
     setTodos(newTodos)
-    saveToLS()
+    saveToLS(newTodos)
   }
 
   const handleAdd = () => {
-    setTodos([...todos, { id: uuidv4(), todo, isComplete: false }])
+    if (todo.trim().length < 3) {
+      return
+    }
+
+    let newTodo = {
+      id: uuidv4(),
+      todo: todo,
+      isComplete: false
+    }
+
+    let newTodos = [...todos, newTodo]
+
+    setTodos(newTodos)
+    saveToLS(newTodos)
     setTodo("")
-    saveToLS()
   }
 
   const handleChange = (e) => {
@@ -55,13 +70,16 @@ function App() {
 
   const handleCheckbox = (e) => {
     let id = e.target.name
+
     let index = todos.findIndex(item => {
       return item.id == id;
     })
-    let newTodos = [...todos];
-    newTodos[index].isComplete = !newTodos[index].isComplete;
+
+    let newTodos = [...todos]
+    newTodos[index].isComplete = !newTodos[index].isComplete
+
     setTodos(newTodos)
-    saveToLS()
+    saveToLS(newTodos)
   }
   return (
     <>
@@ -71,8 +89,14 @@ function App() {
         <div className="addTodo flex flex-col mb-4 gap-6">
           <h2 className='text-xl font-bold mt-4 '>Add a Todo</h2>
           <div className="flex gap-1">
-            <input onChange={handleChange} value={todo} name={todo.id} className=' bg-white w-full rounded-full border py-1 px-5' type="text" placeholder="What's on Your Mind 🤔" />
-            <button onClick={handleAdd} disabled={todo.length < 3} className='cursor-pointer bg-violet-800 hover:bg-violet-900 p-4 py-1 mx-1 rounded-full disabled:bg-violet-700  text-white text-sm font-bold  h-10 w-20' >Save</button>
+            <input onChange={handleChange} value={todo} className='bg-white w-full rounded-full border py-1 px-5' type="text" placeholder="What's on Your Mind 🤔" />
+            <button
+              onClick={handleAdd}
+              disabled={todo.length < 3}
+              className='cursor-pointer bg-violet-800 hover:bg-violet-900 p-4 py-1 mx-1 rounded-full disabled:bg-violet-700 text-white text-sm font-bold h-10 w-20'
+            >
+              Save
+            </button>
           </div>
         </div>
         <div className='h-0.5 bg-black opacity-20 w-[90%] m-auto my-3'></div>
