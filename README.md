@@ -29,9 +29,7 @@ ShreeTodo/
 └── README.md
 
 ## 📸 Preview
-
-
-Add a screenshot of the application here.
+![ShreeTodo Preview](/Preview.png)
 
 ## 🌐 Live Demo
 
